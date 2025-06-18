@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship Final Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, rgb(222, 34, 38), #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #ccc;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .year-selector {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 100;
+        }
+
+        .year-input {
+            background: rgba(222, 34, 38, 0.1);
+            border: 2px solid rgb(222, 34, 38);
+            color: white;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            outline: none;
+            transition: all 0.3s ease;
+            width: 200px;
+            cursor: pointer;
+        }
+
+        .year-input:focus {
+            box-shadow: 0 0 20px rgba(222, 34, 38, 0.3);
+            transform: scale(1.05);
+        }
+
+        .carousel-container {
+            position: relative;
+            height: 500px;
+            margin: 80px 0 80px 0;
+            perspective: 1200px;
+            overflow: visible;
+        }
+
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .project-card {
+            position: absolute;
+            width: 340px;
+            height: 400px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #333 0%, #1a1a1a 100%);
+            border-radius: 20px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .project-card:hover {
+            border-color: rgb(222, 34, 38);
+            transform: translate(-50%, -50%) scale(1.05) rotateY(5deg);
+            box-shadow: 0 20px 40px rgba(222, 34, 38, 0.2);
+        }
+
+        .project-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: rgb(222, 34, 38);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .project-card p {
+            color: #ddd;
+            line-height: 1.6;
+            text-align: center;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .project-card .click-hint {
+            font-size: 0.9rem;
+            color: #999;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            margin-top: auto;
+            padding: 8px 16px;
+            background: rgba(222, 34, 38, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(222, 34, 38, 0.3);
+        }
+
+        .project-card:hover .click-hint {
+            opacity: 1;
+        }
+
+        .carousel-nav {
+            text-align: center;
+            margin-top: 10px;
+            position: relative;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: rgba(222, 34, 38, 0.2);
+            border: 2px solid rgb(222, 34, 38);
+            color: white;
+            padding: 12px 24px;
+            margin: 0 10px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            font-weight: 500;
+        }
+
+        .nav-btn:hover {
+            background: rgb(222, 34, 38);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(222, 34, 38, 0.3);
+        }
+
+        .rotation-indicator {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: relative;
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 1100px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.4s ease-out;
+        }
+
+        .modal-header {
+            padding: 30px 30px 20px 30px;
+            border-bottom: 2px solid rgba(222, 34, 38, 0.3);
+            position: relative;
+        }
+
+        .modal-title {
+            font-size: 2.5rem;
+            color: rgb(222, 34, 38);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .close {
+            position: absolute;
+            right: 30px;
+            top: 30px;
+            font-size: 2rem;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .close:hover {
+            color: rgb(222, 34, 38);
+            background: rgba(222, 34, 38, 0.1);
+        }
+
+        .modal-body {
+            display: flex;
+            padding: 30px;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        .project-image {
+            flex: 0 0 400px;
+            background: linear-gradient(45deg, rgb(222, 34, 38), #ff6b6b);
+            border-radius: 15px;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .project-image .no-image {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+
+        .project-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        .project-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .project-description {
+            list-style: none;
+            margin-bottom: 40px;
+        }
+
+        .project-description li {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: #ddd;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .project-description li:last-child {
+            border-bottom: none;
+        }
+
+        .project-description li:before {
+            content: '→';
+            color: rgb(222, 34, 38);
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .team-section h4 {
+            color: rgb(222, 34, 38);
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .team-members {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .team-member {
+            background: rgba(222, 34, 38, 0.1);
+            padding: 25px 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(222, 34, 38, 0.3);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(222, 34, 38, 0.2);
+            border-color: rgba(222, 34, 38, 0.5);
+        }
+
+        .member-avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(45deg, rgb(222, 34, 38), #ff6b6b);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .member-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .member-role {
+            color: #aaa;
+            font-size: 0.95rem;
+        }
+
+        .empty-state {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #888;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px dashed rgba(222, 34, 38, 0.3);
+        }
+
+        .empty-state h3 {
+            color: rgb(222, 34, 38);
+            margin-bottom: 10px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .modal-body {
+                flex-direction: column;
+                gap: 25px;
+            }
+            
+            .project-image {
+                flex: none;
+                min-height: 200px;
+            }
+            
+            .team-members {
+                grid-template-columns: 1fr;
+            }
+            
+            .project-card {
+                width: 300px;
+                height: 350px;
+                padding: 25px;
+            }
+            
+            .carousel-container {
+                height: 400px;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+            
+            .modal-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .project-card {
+                width: 280px;
+            }
+            
+            .nav-btn {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+        }
+    .team-member a,
+.project-image-preview a,
+#modalImage a {
+    color: inherit;
+    text-decoration: none;
+    outline: none;
+}
+
+.team-member a:hover,
+.project-image-preview a:hover,
+#modalImage a:hover {
+    color: inherit;
+    text-decoration: none;
+}
+.project-logo-wrap {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+.project-logo-img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    background: white;
+    padding: 4px;
+    border: 1.5px solid #eee;
+    display: block;
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Internship Final Projects</h1>
+            <p>Intern final projects leverage AI and mentorship to address real-world challenges by identifying and solving critical gaps in the business market. These projects empower interns to develop innovative solutions that combine cutting-edge technology with practical industry insights..</p>
+        </div>
+
+        <div class="year-selector">
+            <select class="year-input" id="yearInput">
+                <option value="2023">2023</option>
+                <option value="2024" selected>2024</option>
+                <option value="2025">2025</option>
+            </select>
+        </div>
+
+        <div class="carousel-container">
+            <div class="carousel" id="carousel">
+                <!-- Project cards will be dynamically generated -->
+            </div>
+        </div>
+
+        <div class="carousel-nav">
+            <button class="nav-btn" onclick="rotateCarousel(-1)">← Previous</button>
+            <button class="nav-btn" onclick="rotateCarousel(1)">Next →</button>
+        </div>
+
+        <div class="rotation-indicator">
+            <p>Projects rotate automatically every 10 seconds</p>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="project-image" id="modalImage">
+                    <div class="no-image">Project Showcase</div>
+                </div>
+                <div class="project-details">
+                    <ul class="project-description" id="modalDescription">
+                    </ul>
+                    <div class="team-section">
+                        <h4>Team Members</h4>
+                        <div class="team-members" id="modalTeam">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample project data with years
+        const allProjects = [
+            // 2023 Projects
+            {
+    title: "TrashCNN",
+    description: "Trash CNN is an image classification model designed to accurately identify and sort different types of waste to promote efficient recycling and waste management.",
+    logo: "",
+    year: 2023,
+                details: [
+                   "Developed Trash CNN, a convolutional neural network model for automated waste classification and sorting",
+                    "Trained model on diverse datasets to accurately identify multiple categories of recyclable and non-recyclable materials",
+                    "Optimized image preprocessing and augmentation techniques to enhance model robustness and accuracy",
+                    "Integrated the model into a user-friendly application to assist users in efficient waste disposal and recycling efforts",
+
+                ],
+                team: [
+                { name: "Jack Blundin", role: "Developer", avatar: "JB", link: "https://www.linkedin.com/in/jack-blundin-a776ab243/"},
+                { name: "Yash Bolishetti", role: "Designer", avatar: "YB", link: "https://www.linkedin.com/in/yash-bolishetti-316430314/" }
+                ]
+            },
+            // 2024 Projects
+            {
+    title: "Prompt Master",
+    description: "A fast-paced online party game where players take turns crafting AI image prompts and then compete to accurately guess each other's prompts based on the generated images.",
+    image: "promptmaster.jpg",
+    imageLink: "https://promptmaster.gg/",
+    logo: "promptmasterlogo.jpg",
+    year: 2024,
+                details: [
+                   "Designed a multiplayer game platform enabling real-time AI image prompt creation and guessing",
+                    "Implemented backend using Socket, Node.js, and Express for seamless live player interactions",
+                    "Integrated Flux.1 to generate dynamic image content from user prompts",
+                    "Developed responsive UI with smooth transitions for mobile and desktop users",
+
+                ],
+                team: [
+                    { name: "Will Newkirk", role: "Frontend Developer", avatar: "WN", link: "https://www.linkedin.com/in/will-newkirk-ba4b532a1/" },
+                    { name: "Sean Blundin", role: "Developer", avatar: "SB", link: "https://www.linkedin.com/in/seanblundin/" },
+                    { name: "Jimmy Mayer", role: "Developer", avatar: "JM", link: "https://www.linkedin.com/in/jimmy-mayer/"},
+                    { name: "Esam Rimawi", role: "Developer", avatar: "ER", link: "https://www.linkedin.com/in/esam-rimawi-2b47a3302/" }
+                ]
+            },
+            {
+                title: "SmartPrep",
+                description: "SmartPrep is an AI-driven study platform that offers personalized, adaptive learning experiences by generating unique AP exam questions, providing dynamic feedback on student responses, tracking progress across units, and adjusting difficulty to optimize exam readiness and mastery.",
+                logo: "smartpreplogo.jpg",
+                year: 2024,
+                image: "smartprep.jpg",
+                details: [
+                    "Developed SmartPrep, an AI-powered study app delivering personalized feedback and dynamic question generation for AP exam prep",
+                    "Integrated ChatGPT to analyze student responses and provide tailored feedback on both logic and content in FRQs and MCQs",
+                    "Implemented adaptive learning algorithms to track user progress, identify weak areas, and adjust question difficulty accordingly",
+                    "Created a course-specific progress system with unit-level tracking and real-time estimated AP score feedback",
+
+                ],
+                team: [
+                    { name: "Anna David", role: "Developer", avatar: "AD", link:"https://www.linkedin.com/in/anna-david-37b7b1292/" },
+                    { name: "Sarah Siegel", role: "Developer", avatar: "SS", link:"https://www.linkedin.com/in/sarah-siegel-6958ba311/" }
+                ]
+            },
+            {
+    title: "InherentAI",
+    description: "Inherent AI analyzes user behavior in real-time to provide personalized, context-aware responses that enhance interactivity within web applications",
+    logo: "inherentailogo.jpg",
+    image: "",
+    year: 2024,
+                details: [
+                    "Built Inherent AI, a context-aware assistant leveraging machine learning to deliver adaptive, intelligent responses within web applications",
+                    "Developed algorithms to analyze user behavior and tailor responses based on real-time context",
+                    "Implemented seamless integration with web platforms for enhanced interactivity and user experience",
+                    "Optimized ML models to improve response accuracy and adaptability over time",
+
+                ],
+                team: [
+                    { name: "Jack Blundin", role: "Developer", avatar: "JB", link: "https://www.linkedin.com/in/jack-blundin-a776ab243/"},
+                    { name: "Yash Bolishetti", role: "Designer", avatar: "YB", link: "https://www.linkedin.com/in/yash-bolishetti-316430314/" }
+                ]
+            },
+            // 2025 Projects
+            {
+    title: "Project 1 2025",
+    description: "Coming soon - exciting new project in development",
+    logo: "",
+    year: 2025,
+                details: [
+                    "Project details will be available soon",
+                    "Stay tuned for updates",
+                    "Innovative solutions in progress",
+                    "Cutting-edge technology implementation"
+                ],
+                team: [
+                    { name: "TBD", role: "Developer", avatar: "?" },
+                    { name: "TBD", role: "Designer", avatar: "?" }
+                ]
+            },
+            {
+    title: "Project 2 2025",
+    description: "Coming soon - another innovative project in the pipeline",
+    logo: "",
+    year: 2025,
+                details: [
+                    "Project details will be available soon",
+                    "Revolutionary approach in development", 
+                    "Advanced features being implemented",
+                    "Comprehensive testing in progress"
+                ],
+                team: [
+                    { name: "TBD", role: "Developer", avatar: "?" },
+                    { name: "TBD", role: "Designer", avatar: "?" }
+                ]
+            },
+        ];
+
+        let currentIndex = 0;
+        let rotationAngle = 0;
+        let autoRotateInterval;
+        let currentProjects = [];
+
+        function filterProjectsByYear(year) {
+            return allProjects.filter(project => project.year == year);
+        }
+
+        function initializeCarousel(year = 2024) {
+            currentProjects = filterProjectsByYear(year);
+            const carousel = document.getElementById('carousel');
+            carousel.innerHTML = '';
+            
+            if (currentProjects.length === 0) {
+                carousel.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No Projects Found</h3>
+                        <p>No projects available for ${year}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            currentProjects.forEach((project, index) => {
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.innerHTML = `
+    ${project.logo ? `<div class='project-logo-wrap'><img src='${project.logo}' alt='${project.title} Logo' class='project-logo-img' /></div>` : ''}
+    <h3>${project.title}</h3>
+    <p>${project.description}</p>
+    <div class="click-hint">Click to view details</div>
+`;
+                
+                // Position cards in a circle
+                const angle = (index * 360) / currentProjects.length;
+                card.style.transform = `translate(-50%, -50%) rotateY(${angle}deg) translateZ(320px)`;
+                card.addEventListener('click', () => openModal(project));
+                carousel.appendChild(card);
+            });
+
+            // Reset rotation
+            rotationAngle = 0;
+            carousel.style.transform = `rotateY(${rotationAngle}deg)`;
+            
+            // Restart auto rotation
+            clearInterval(autoRotateInterval);
+            startAutoRotation();
+        }
+
+        function rotateCarousel(direction) {
+            if (currentProjects.length === 0) return;
+            
+            rotationAngle += direction * (360 / currentProjects.length);
+            const carousel = document.getElementById('carousel');
+            carousel.style.transform = `rotateY(${rotationAngle}deg)`;
+            
+            // Reset auto rotation
+            clearInterval(autoRotateInterval);
+            setTimeout(startAutoRotation, 3000);
+        }
+
+        function startAutoRotation() {
+            if (currentProjects.length === 0) return;
+            
+            autoRotateInterval = setInterval(() => {
+    rotateCarousel(1);
+}, 10000);
+        }
+
+        function openModal(project) {
+            const modal = document.getElementById('projectModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDescription = document.getElementById('modalDescription');
+            const modalTeam = document.getElementById('modalTeam');
+            const modalImage = document.getElementById('modalImage');
+
+            modalTitle.textContent = project.title;
+            
+            // Set project image or placeholder with better spacing
+            if (project.image) {
+    if (project.imageLink) {
+        modalImage.innerHTML = `<a href="${project.imageLink}" target="_blank" rel="noopener noreferrer"><img src="${project.image}" alt="${project.title} Preview" /></a>`;
+    } else {
+        modalImage.innerHTML = `<img src="${project.image}" alt="${project.title} Preview" />`;
+    }
+} else {
+    modalImage.innerHTML = `<div class="no-image">Project Showcase</div>`;
+}
+
+            modalDescription.innerHTML = '';
+            project.details.forEach(detail => {
+                const li = document.createElement('li');
+                li.textContent = detail;
+                modalDescription.appendChild(li);
+            });
+
+            modalTeam.innerHTML = '';
+            project.team.forEach(member => {
+    const memberDiv = document.createElement('div');
+    memberDiv.className = 'team-member';
+    let avatarHtml = `<div class="member-avatar">${member.avatar}</div>`;
+    let nameHtml = `<div class="member-name">${member.name}</div>`;
+    if (member.link) {
+        avatarHtml = `<a href="${member.link}" target="_blank" rel="noopener noreferrer">${avatarHtml}</a>`;
+        nameHtml = `<a href="${member.link}" target="_blank" rel="noopener noreferrer">${member.name}</a>`;
+    }
+    memberDiv.innerHTML = `
+        ${avatarHtml}
+        ${nameHtml}
+        <div class="member-role">${member.role}</div>
+    `;
+    modalTeam.appendChild(memberDiv);
+});
+
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('projectModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeCarousel(2024);
+        });
+
+        document.querySelector('.close').addEventListener('click', closeModal);
+
+        document.getElementById('projectModal').addEventListener('click', (e) => {
+            if (e.target.id === 'projectModal') {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+            if (e.key === 'ArrowLeft') {
+                rotateCarousel(-1);
+            }
+            if (e.key === 'ArrowRight') {
+                rotateCarousel(1);
+            }
+        });
+
+        // Year selector functionality
+        document.getElementById('yearInput').addEventListener('change', (e) => {
+            const selectedYear = parseInt(e.target.value);
+            initializeCarousel(selectedYear);
+        });
+    </script>
+</body>
+</html>
