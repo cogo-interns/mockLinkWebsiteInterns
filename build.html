@@ -686,11 +686,17 @@
             return allProjects.filter(project => project.year == year);
         }
 
+        
+            
         function initializeCarousel(year = 2024) {
             currentProjects = filterProjectsByYear(year);
-            const carousel = document.getElementById('carousel');
-            carousel.innerHTML = '';
-            
+            renderProjects(year);
+        }
+
+        function renderProjects(year) {
+            const carousel = document.querySelector('.carousel');
+            if (!carousel) return;
+
             if (currentProjects.length === 0) {
                 carousel.innerHTML = `
                     <div class="empty-state">
@@ -701,19 +707,22 @@
                 return;
             }
 
+            carousel.innerHTML = ''; // Clear previous cards
+
             currentProjects.forEach((project, index) => {
                 const card = document.createElement('div');
                 card.className = 'project-card';
                 card.innerHTML = `
-    ${project.logo ? `<div class='project-logo-wrap'><img src='${project.logo}' alt='${project.title} Logo' class='project-logo-img' /></div>` : ''}
-    <h3>${project.title}</h3>
-    <p>${project.description}</p>
-    <div class="click-hint">Click to view details</div>
-`;
-                
+                    ${project.logo ? `<div class='project-logo-wrap'><img src='${project.logo}' alt='${project.title} Logo' class='project-logo-img' /></div>` : ''}
+                    <h3>${project.title}</h3>
+                    <p>${project.description}</p>
+                    <div class="click-hint">Click to view details</div>
+                `;
+
                 // Position cards in a circle
                 const angle = (index * 360) / currentProjects.length;
                 card.style.transform = `translate(-50%, -50%) rotateY(${angle}deg) translateZ(320px)`;
+
                 card.addEventListener('click', () => openModal(project));
                 carousel.appendChild(card);
             });
@@ -721,116 +730,144 @@
             // Reset rotation
             rotationAngle = 0;
             carousel.style.transform = `rotateY(${rotationAngle}deg)`;
-            
+
             // Restart auto rotation
             clearInterval(autoRotateInterval);
             startAutoRotation();
         }
 
+
+        let isRotating = false; // Add rotation state flag
+
         function rotateCarousel(direction) {
-            if (currentProjects.length === 0) return;
+        if (currentProjects.length === 0 || isRotating) return;
             
-            rotationAngle += direction * (360 / currentProjects.length);
-            const carousel = document.getElementById('carousel');
-            carousel.style.transform = `rotateY(${rotationAngle}deg)`;
+        isRotating = true; // Prevent multiple simultaneous rotations
             
-            // Reset auto rotation
-            clearInterval(autoRotateInterval);
-            setTimeout(startAutoRotation, 3000);
+        // Clear any existing auto rotation
+        clearInterval(autoRotateInterval);
+            
+        // Calculate rotation step
+        const rotationStep = 360 / currentProjects.length;
+        rotationAngle += direction * rotationStep;
+            
+        // Normalize rotation angle to prevent excessive values
+        rotationAngle = rotationAngle % 360;
+        if (rotationAngle < 0) rotationAngle += 360;
+            
+        const carousel = document.getElementById('carousel');
+        carousel.style.transform = `rotateY(${rotationAngle}deg)`;
+            
+        // Reset rotation flag and restart auto rotation after transition
+        setTimeout(() => {
+            isRotating = false;
+            startAutoRotation();
+        }, 500); // Wait for CSS transition to complete
         }
 
         function startAutoRotation() {
-            if (currentProjects.length === 0) return;
+        // Clear any existing interval first
+        clearInterval(autoRotateInterval);
             
-            autoRotateInterval = setInterval(() => {
-    rotateCarousel(1);
-}, 10000);
+        if (currentProjects.length === 0) return;
+            
+        autoRotateInterval = setInterval(() => {
+            if (!isRotating) { // Only rotate if not already rotating
+                rotateCarousel(1);
+            }
+        }, 10000);
         }
 
         function openModal(project) {
-            const modal = document.getElementById('projectModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalDescription = document.getElementById('modalDescription');
-            const modalTeam = document.getElementById('modalTeam');
-            const modalImage = document.getElementById('modalImage');
-
-            modalTitle.textContent = project.title;
+        // Stop auto rotation when modal opens
+        clearInterval(autoRotateInterval);
             
-            // Set project image or placeholder with better spacing
-            if (project.image) {
-    if (project.imageLink) {
-        modalImage.innerHTML = `<a href="${project.imageLink}" target="_blank" rel="noopener noreferrer"><img src="${project.image}" alt="${project.title} Preview" /></a>`;
-    } else {
-        modalImage.innerHTML = `<img src="${project.image}" alt="${project.title} Preview" />`;
-    }
-} else {
-    modalImage.innerHTML = `<div class="no-image">Project Showcase</div>`;
-}
+        const modal = document.getElementById('projectModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDescription = document.getElementById('modalDescription');
+        const modalTeam = document.getElementById('modalTeam');
+        const modalImage = document.getElementById('modalImage');
 
-            modalDescription.innerHTML = '';
-            project.details.forEach(detail => {
-                const li = document.createElement('li');
-                li.textContent = detail;
-                modalDescription.appendChild(li);
-            });
+        modalTitle.textContent = project.title;
 
-            modalTeam.innerHTML = '';
-            project.team.forEach(member => {
-    const memberDiv = document.createElement('div');
-    memberDiv.className = 'team-member';
-    let avatarHtml = `<div class="member-avatar">${member.avatar}</div>`;
-    let nameHtml = `<div class="member-name">${member.name}</div>`;
-    if (member.link) {
-        avatarHtml = `<a href="${member.link}" target="_blank" rel="noopener noreferrer">${avatarHtml}</a>`;
-        nameHtml = `<a href="${member.link}" target="_blank" rel="noopener noreferrer">${member.name}</a>`;
-    }
-    memberDiv.innerHTML = `
-        ${avatarHtml}
-        ${nameHtml}
-        <div class="member-role">${member.role}</div>
-    `;
-    modalTeam.appendChild(memberDiv);
-});
+        // Set project image or placeholder with better spacing
+        if (project.image) {
+        if (project.imageLink) {
+            modalImage.innerHTML = `<a href="${project.imageLink}" target="_blank" rel="noopener noreferrer"><img src="${project.image}" alt="${project.title} Preview" /></a>`;
+        } else {
+            modalImage.innerHTML = `<img src="${project.image}" alt="${project.title} Preview" />`;
+        }
+        } else {
+        modalImage.innerHTML = `<div class="no-image">Project Showcase</div>`;
+        }
 
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
+        modalDescription.innerHTML = '';
+        project.details.forEach(detail => {
+        const li = document.createElement('li');
+        li.textContent = detail;
+        modalDescription.appendChild(li);
+        });
+
+        modalTeam.innerHTML = '';
+        project.team.forEach(member => {
+        const memberDiv = document.createElement('div');
+        memberDiv.className = 'team-member';
+        let avatarHtml = `<div class="member-avatar">${member.avatar}</div>`;
+        let nameHtml = `<div class="member-name">${member.name}</div>`;
+        if (member.link) {
+            avatarHtml = `<a href="${member.link}" target="_blank" rel="noopener noreferrer">${avatarHtml}</a>`;
+            nameHtml = `<a href="${member.link}" target="_blank" rel="noopener noreferrer">${member.name}</a>`;
+        }
+        memberDiv.innerHTML = `
+            ${avatarHtml}
+            ${nameHtml}
+            <div class="member-role">${member.role}</div>
+        `;
+        modalTeam.appendChild(memberDiv);
+        });
+
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
-            const modal = document.getElementById('projectModal');
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+        const modal = document.getElementById('projectModal');
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+            
+        // Restart auto rotation when modal closes
+        startAutoRotation();
         }
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', () => {
             initializeCarousel(2024);
-        });
 
-        document.querySelector('.close').addEventListener('click', closeModal);
+            document.querySelector('.close').addEventListener('click', closeModal);
 
-        document.getElementById('projectModal').addEventListener('click', (e) => {
-            if (e.target.id === 'projectModal') {
-                closeModal();
-            }
-        });
+            document.getElementById('projectModal').addEventListener('click', (e) => {
+                if (e.target.id === 'projectModal') {
+                    closeModal();
+                }
+            });
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-            if (e.key === 'ArrowLeft') {
-                rotateCarousel(-1);
-            }
-            if (e.key === 'ArrowRight') {
-                rotateCarousel(1);
-            }
-        });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+                if (e.key === 'ArrowLeft') {
+                    rotateCarousel(-1);
+                }
+                if (e.key === 'ArrowRight') {
+                    rotateCarousel(1);
+                }
+            });
 
-        // Year selector functionality
-        document.getElementById('yearInput').addEventListener('change', (e) => {
-            const selectedYear = parseInt(e.target.value);
-            initializeCarousel(selectedYear);
+            // Year selector functionality
+            document.getElementById('yearInput').addEventListener('change', (e) => {
+                const selectedYear = parseInt(e.target.value);
+                initializeCarousel(selectedYear);
+            });
         });
     </script>
 </body>
