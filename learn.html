@@ -508,6 +508,51 @@
       to { opacity: 1; }
     }
 
+    /* Navigation and Logo Styles */
+    .navigation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .logo {
+      height: 50px;
+      width: auto;
+    }
+
+    .back-button {
+      position: absolute;
+      left: 1rem;
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .back-button:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(-5px);
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .hero { padding: 0 1rem; }
@@ -542,6 +587,16 @@
   </style>
 </head>
 <body>
+
+  <!-- Navigation and Logo -->
+  <div class="navigation">
+    <a href="javascript:history.back()" class="back-button">← Back</a>
+    <div class="logo-container">
+      <a href="index.html">
+        <img src="linklogo.png" alt="Link Logo" class="logo">
+      </a>
+    </div>
+  </div>
 
   <!-- Pathway Section -->
   <section class="pathway-section" id="pathway">
