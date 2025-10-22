@@ -95,7 +95,7 @@
         .carousel-container {
             position: relative;
             height: 500px;
-            margin: 80px 0 80px 0;
+            margin: 40px 0 60px 0;
             perspective: 1200px;
             overflow: visible;
         }
@@ -110,14 +110,14 @@
 
         .project-card {
             position: absolute;
-            width: 340px;
+            width: 320px;
             height: 400px;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
             background: linear-gradient(135deg, #333 0%, #1a1a1a 100%);
             border-radius: 20px;
-            padding: 30px;
+            padding: 20px;
             cursor: pointer;
             transition: all 0.4s ease;
             border: 2px solid transparent;
@@ -126,6 +126,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            overflow: hidden;
         }
 
         .project-card:hover {
@@ -144,15 +145,13 @@
 
         .project-card p {
             color: #ddd;
-            line-height: 1.6;
+            line-height: 1.4;
             text-align: center;
-            font-size: 1rem;
-            margin-bottom: 25px;
+            font-size: 0.9rem;
+            margin: 10px 0;
             flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
+            overflow: visible;
+            padding: 0 5px;
         }
 
         .project-card .click-hint {
@@ -324,11 +323,12 @@
         }
 
         .project-description li {
-            padding: 15px 0;
+            padding: 12px 0;
             border-bottom: 1px solid rgba(255,255,255,0.1);
             color: #ddd;
-            line-height: 1.7;
-            font-size: 1rem;
+            line-height: 1.5;
+            font-size: 0.9rem;
+            margin: 0;
         }
 
         .project-description li:last-child {
@@ -491,86 +491,86 @@
                 font-size: 0.9rem;
             }
         }
-    .team-member a,
-.project-image-preview a,
-#modalImage a {
-    color: inherit;
-    text-decoration: none;
-    outline: none;
-}
+        .team-member a,
+        .project-image-preview a,
+        #modalImage a {
+            color: inherit;
+            text-decoration: none;
+            outline: none;
+        }
 
-.team-member a:hover,
-.project-image-preview a:hover,
-#modalImage a:hover {
-    color: inherit;
-    text-decoration: none;
-}
-.project-logo-wrap {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 12px;
-}
-.project-logo-img {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-    background: white;
-    padding: 4px;
-    border: 1.5px solid #eee;
-    display: block;
-}
+        .team-member a:hover,
+        .project-image-preview a:hover,
+        #modalImage a:hover {
+            color: inherit;
+            text-decoration: none;
+        }
+        .project-logo-wrap {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        .project-logo-img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+            background: white;
+            padding: 4px;
+            border: 1.5px solid #eee;
+            display: block;
+        }
 
-    /* Navigation and Logo Styles */
-    .navigation {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1rem;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
-      z-index: 100;
-    }
+            /* Navigation and Logo Styles */
+            .navigation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            }
 
-    .logo-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+            .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            }
 
-    .logo {
-      height: 50px;
-      width: auto;
-    }
+            .logo {
+            height: 50px;
+            width: auto;
+            }
 
-    .back-button {
-      position: absolute;
-      left: 1rem;
-      color: var(--white);
-      text-decoration: none;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-      background: rgba(255, 255, 255, 0.1);
-    }
+            .back-button {
+            position: absolute;
+            left: 1rem;
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            }
 
-    .back-button:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: translateX(-5px);
-    }
-    </style>
-</head>
-<body>
+            .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+        </style>
+    </head>
+    <body>
 
   <!-- Navigation and Logo -->
   <div class="navigation">
@@ -716,37 +716,27 @@
             },
             // 2025 Projects
             {
-    title: "Project 1 2025",
-    description: "Coming soon - exciting new project in development",
-    logo: "",
+    title: "Gaze AI",
+    description: "AI-powered financial advisor platform with compliance checking, automated communications, and sentiment analysis. Streamlines workflows using data-driven insights and voice interface for better client management.",
+    logo: "gazelogo.png",
+    image: "gazedemo.png",
     year: 2025,
                 details: [
-                    "Project details will be available soon",
-                    "Stay tuned for updates",
-                    "Innovative solutions in progress",
-                    "Cutting-edge technology implementation"
+                    "Compliance Checking: Automated monitoring of financial regulations and internal policies in real-time, ensuring all communications and recommendations remain compliant with industry standards",
+                    "Advisor-Tailored Communications: AI-powered drafting of personalized client communications that maintain professional tone while adapting to individual client preferences and needs",
+                    "Sentiment Analysis: Advanced NLP to analyze client communications and market sentiment, helping advisors better understand client concerns and market conditions",
+                    "Tool Consolidation: Unified platform combining portfolio management, client CRM, and financial planning tools into a single, intuitive interface",
+                    "Agentic Workflow: AI assistants that automate routine tasks, schedule follow-ups, and provide proactive recommendations based on client interactions",
+                    "Voice Interface: Hands-free operation with natural language processing for creating notes, retrieving client information, and executing commands through voice",
+                    "Financial Planning Tools: Data-driven insights and scenario modeling to help advisors create comprehensive, personalized financial plans for clients"
+        
                 ],
                 team: [
-                    { name: "TBD", role: "Developer", avatar: "?" },
-                    { name: "TBD", role: "Designer", avatar: "?" }
+                    { name: "Jonathan Landu", role: "Developer", avatar: "JL", link: "https://www.linkedin.com/in/jonathan-landau-a40b10381/" },
+                    { name: "Izo Kawaguchi", role: "Developer", avatar: "IK", link: "https://www.linkedin.com/in/izo-kawaguchi-ba5571214/" },
+                    { name: "Turbold Gereltod", role: "Developer", avatar: "TG", link: "https://www.linkedin.com/in/turboldgereltod/" }
                 ]
-            },
-            {
-    title: "Project 2 2025",
-    description: "Coming soon - another innovative project in the pipeline",
-    logo: "",
-    year: 2025,
-                details: [
-                    "Project details will be available soon",
-                    "Revolutionary approach in development", 
-                    "Advanced features being implemented",
-                    "Comprehensive testing in progress"
-                ],
-                team: [
-                    { name: "TBD", role: "Developer", avatar: "?" },
-                    { name: "TBD", role: "Designer", avatar: "?" }
-                ]
-            },
+            }
         ];
 
         let currentIndex = 0;
